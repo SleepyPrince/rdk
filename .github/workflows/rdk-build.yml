@@ -1,4 +1,4 @@
-wname: RDK flutter
+name: RDK flutter
 
 on:
   workflow_call:
