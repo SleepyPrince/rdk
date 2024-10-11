@@ -85,7 +85,11 @@ class RustdeskImpl {
       dynamic hint}) {
     return js.context.callMethod('setByName', [
       'session_add_sync',
-      jsonEncode({'id': id, 'password': password})
+      jsonEncode({
+        'id': id,
+        'password': password,
+        'is_shared_password': isSharedPassword
+      })
     ]);
   }
 
@@ -152,7 +156,10 @@ class RustdeskImpl {
       required String code,
       required bool trustThisDevice,
       dynamic hint}) {
-    return Future(() => js.context.callMethod('setByName', ['send_2fa', code]));
+    return Future(() => js.context.callMethod('setByName', [
+          'send_2fa',
+          jsonEncode({'code': code, 'trust_this_device': trustThisDevice})
+        ]));
   }
 
   Future<void> sessionClose({required UuidValue sessionId, dynamic hint}) {
@@ -468,7 +475,8 @@ class RustdeskImpl {
 
   Future<void> sessionSendChat(
       {required UuidValue sessionId, required String text, dynamic hint}) {
-    throw UnimplementedError();
+    return Future(
+        () => js.context.callMethod('setByName', ['send_chat', text]));
   }
 
   Future<void> sessionPeerOption(
@@ -1114,7 +1122,8 @@ class RustdeskImpl {
   }
 
   Future<void> mainRemovePeer({required String id, dynamic hint}) {
-    return Future(() => js.context.callMethod('setByName', ['remove', id]));
+    return Future(
+        () => js.context.callMethod('setByName', ['remove_peer', id]));
   }
 
   bool mainHasHwcodec({dynamic hint}) {
@@ -1142,27 +1151,28 @@ class RustdeskImpl {
   }
 
   Future<void> mainSaveAb({required String json, dynamic hint}) {
-    throw UnimplementedError();
+    return Future(() => js.context.callMethod('setByName', ['save_ab', json]));
   }
 
   Future<void> mainClearAb({dynamic hint}) {
-    throw UnimplementedError();
+    return Future(() => js.context.callMethod('setByName', ['clear_ab']));
   }
 
   Future<String> mainLoadAb({dynamic hint}) {
-    throw UnimplementedError();
+    return Future(() => js.context.callMethod('getByName', ['load_ab']));
   }
 
   Future<void> mainSaveGroup({required String json, dynamic hint}) {
-    throw UnimplementedError();
+    return Future(
+        () => js.context.callMethod('setByName', ['save_group', json]));
   }
 
   Future<void> mainClearGroup({dynamic hint}) {
-    throw UnimplementedError();
+    return Future(() => js.context.callMethod('setByName', ['clear_group']));
   }
 
   Future<String> mainLoadGroup({dynamic hint}) {
-    throw UnimplementedError();
+    return Future(() => js.context.callMethod('getByName', ['load_group']));
   }
 
   Future<void> sessionSendPointer(
@@ -1188,7 +1198,8 @@ class RustdeskImpl {
 
   Future<void> sessionSendNote(
       {required UuidValue sessionId, required String note, dynamic hint}) {
-    throw UnimplementedError();
+    return Future(
+        () => js.context.callMethod('setByName', ['send_note', note]));
   }
 
   Future<String> sessionAlternativeCodecs(
@@ -1680,7 +1691,8 @@ class RustdeskImpl {
 
   bool sessionGetEnableTrustedDevices(
       {required UuidValue sessionId, dynamic hint}) {
-    throw UnimplementedError();
+    return js.context.callMethod('getByName', ['enable_trusted_devices']) ==
+        'Y';
   }
 
   Future<String> mainGetTrustedDevices({dynamic hint}) {
